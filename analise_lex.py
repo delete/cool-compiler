@@ -33,7 +33,7 @@ def tokenize(codigo):
 	    'ID','REAL','INT',
 	    'PLUS','MINUS','TIMES','DIVIDE',
 	    'LPAREN','RPAREN',
-	    'LKEY','RKEY','DELIMITER',
+	    'LBRACE','RBRACE','DELIMITER',
 	    'AT','EQUALS', 'TYPE', 'STRING', 'VAZIO',
 	] + list(reserved.values())
 
@@ -41,8 +41,8 @@ def tokenize(codigo):
 	# Regex dos Tokens
 	t_EQUALS = r'\='
 	t_AT = r'<-'
-	t_LKEY = r'\{'
-	t_RKEY = r'\}'
+	t_LBRACE = r'\{'
+	t_RBRACE = r'\}'
 	t_DELIMITER = r'\;'
 	t_PLUS = r'\+'
 	t_MINUS = r'-'
@@ -64,8 +64,7 @@ def tokenize(codigo):
 	    pass
 
 	def t_STRING(t):
-	    r'"([^\\"]+|\\"|\\\\)*"'
-	    #r'\".+\"'
+	    r'\".+\"'
 	    # Tira as aspas
 	    t.value=t.value[1:-1].decode("string-escape")
 	    return t
@@ -95,6 +94,9 @@ def tokenize(codigo):
 	def t_VAZIO(t):
 		r'^\n|^\s+|^\t|^\f|^\v|^\r'
 		pass
+
+	def t_DOT(t):
+		r'\.'
 
 
 	# Compute column. 
