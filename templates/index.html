@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+<div class="panel panel-default">
+		<div class="panel-body">
+		<form action="" method="post">
+		    <textarea id="fonte" name="codigo" class="form-control" placeholder="Digite aqui o código fonte" rows="10">{{codigo}}</textarea><br>
+		    <p><button  class="btn btn-primary" type="submit"  >Análise Léxica</button></p>
+		    
+		</form>
+	</div>
+</div>
+
+{% if  llex or lerror %}
+
+<div class="jumbotron">
+		
+        <h1>Análise</h1>
+        <p>Resultado da análise léxica:</p>
+        
+        {% if  lerror %}
+        	
+        	<table class="table table-hover">
+        		<thead>
+        			<tr>
+        				<th>Token</th>
+        				<th>Lexema</th>
+        				<th>Linha</th>
+        				<th>Coluna</th>
+        			</tr>
+        		</thead>
+        		<tbody>
+        		{% for error in lerror %}        			
+        		
+        			<tr class="danger">
+        				<td>ERROR</td>
+        				<td>{{ error.0 }}</td>
+        				<td>{{ error.1 }}</td>
+        				<td>{{ error.2 }}</td>
+        				
+        			</tr>
+
+        		{% endfor %}
+        		</tbody>
+        	</table>
+        {% endif %}
+
+    	<table class="table table-hover">
+    		<thead>
+    			<tr>
+    				<th>Token</th>
+    				<th>Lexema</th>
+    				<th>Linha</th>
+    				<th>Coluna</th>
+    			</tr>
+    		</thead>
+    		<tbody>
+    		{% for tok in llex %}        			
+    		
+    			<tr class="success">
+    				<td>{{ tok.0 }}</td>
+    				<td>{{ tok.1 }}</td>
+    				<td>{{ tok.2 }}</td>
+    				<td>{{ tok.3 }}</td>
+    				<td></td>
+    			</tr>
+
+    		{% endfor %}
+    		</tbody>
+    	</table>
+
+</div>
+
+{% endif %}
+
+{% endblock %}
