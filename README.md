@@ -8,3 +8,6 @@ To install de requirements packages:
 Then, execute the web app:
 
 `python2 app.py`
+
+Access:
+`http://127.0.0.1:5000/`
