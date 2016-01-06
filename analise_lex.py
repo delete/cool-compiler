@@ -60,7 +60,7 @@ def tokenize(codigo):
 	    return t
 
 	def t_COMMENT(t):
-	    r'--.*'
+	    r'--.* | \(\*([^*]|[\r\n]|(\*+(^|[\r\n])))*\*\)'
 	    pass
 
 	def t_STRING(t):

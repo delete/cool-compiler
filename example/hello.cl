@@ -4,5 +4,7 @@ class Main inherits IO {
     a : Int;
     a <- 5;
     out_int(a);
+    (* teste 
+    	example*)
   } ; 
 } ;
