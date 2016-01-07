@@ -70,7 +70,7 @@ def tokenize(codigo):
         pass
 
     def t_STRING(t):
-        r'\".+\n*\s*.+\"'
+        r'\".*\n*\s*.*\"'
         # Tira as aspas
         t.value = t.value[1:-1].decode("string-escape")
         return t
