@@ -85,11 +85,11 @@ def tokenize(codigo):
 	        t.value = 0
 	    return t
 
-	def t_newline(t):
+	def t_NEWLINE(t):
 	    r'\n+'
 	    t.lexer.lineno += t.value.count("\n")
 
-	def t_VAZIO(t):
+	def t_EMPTY(t):
 		r'^\n|^\s+|^\t|^\f|^\v|^\r'
 		pass
 
