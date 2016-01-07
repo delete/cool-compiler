@@ -7,7 +7,7 @@ import sys
 def tokenize(codigo):
 	# Paralvras reservadas
 	reserved = {
-	   'class' : 'CLASS',
+	   'class': 'CLASS',
 	   'else': 'ELSE',
 	   'if': 'IF',
 	   'fi': 'FI',
@@ -28,16 +28,13 @@ def tokenize(codigo):
 	   'true': 'TRUE',
 	}
 
-
-	#To
 	tokens =[
-	    'ID','REAL','INT',
-	    'PLUS','MINUS','TIMES','DIVIDE',
-	    'LPAREN','RPAREN',
-	    'LBRACE','RBRACE','DELIMITER',
-	    'AT','EQUALS', 'TYPE', 'STRING', 'VAZIO',
+	    'ID', 'REAL', 'INT',
+	    'PLUS', 'MINUS', 'TIMES', 'DIVIDE',
+	    'LPAREN', 'RPAREN',
+	    'LBRACE', 'RBRACE', 'DELIMITER',
+	    'AT', 'EQUALS', 'TYPE', 'STRING', 'VAZIO',
 	] + list(reserved.values())
-
 
 	# Regex dos Tokens
 	t_EQUALS = r'\='
@@ -57,7 +54,7 @@ def tokenize(codigo):
 
 	def t_ID(t):
 	    r'[a-zA-Z_][a-zA-Z_0-9]*'
-	    t.type = reserved.get(t.value,'ID')    # Check for reserved words
+	    t.type = reserved.get(t.value, 'ID')    # Check for reserved words
 	    return t
 
 	def t_COMMENT(t):
@@ -100,41 +97,38 @@ def tokenize(codigo):
 		r'\.'
 
 
-	# Compute column. 
-	#     input is the input text string
-	#     token is a token instance
-	def find_column(input,token):
-	    last_cr = input.rfind('\n',0,token.lexpos)
-	    if last_cr < 0:
-		last_cr = 0
-	    column = (token.lexpos - last_cr) + 1
-	    return column
+	# Compute column.
+	# input is the input text string
+	# token is a token instance
+	def find_column(input, token):
+		last_cr = input.rfind('\n', 0, token.lexpos)
+		if last_cr < 0:
+			last_cr = 0
+		column = (token.lexpos - last_cr) + 1
+		return column
 
-	lerror=[]
+	lerror = []
+
 	def t_error(t):
-	    #print("Illegal character '%s'" % t.value[0])
-	    lr=(t.value[0],t.lineno,t.lexpos)
-	    lerror.append(lr)
-	    t.lexer.skip(1)
-	    
+		#print("Illegal character '%s'" % t.value[0])
+		lr=(t.value[0],t.lineno, t.lexpos)
+		lerror.append(lr)
+		t.lexer.skip(1)
 
 	lexer = lex.lex()
 
-
 	lexer.input(str(codigo))
 
-
-	llex=[]
+	llex = []
 	while 1:
-	    tok = lex.token()
-	    if not tok: break
+		tok = lex.token()
+		if not tok:
+			break
 
-	    lt=(tok.type,tok.value,tok.lineno,tok.lexpos)
-	    llex.append(lt)
-
+		lt=(tok.type, tok.value, tok.lineno, tok.lexpos)
+		llex.append(lt)
 
 	return (tuple(llex), tuple(lerror))
-
 
 
 if __name__ == '__main__':
@@ -154,8 +148,7 @@ if __name__ == '__main__':
 	
 	for l in llex:
 		print l
-	
+
 	print 'ERROR'
 	for e in lerror:
 		print e
-	
