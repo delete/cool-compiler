@@ -5,19 +5,21 @@ from analise_lex import tokenize
 
 app = Flask(__name__)
 
+
 @app.route("/", methods=['GET', 'POST'])
 def hello():
-	llex = ()
-	lerror = ()
-	codigo = ''
+    llex = ()
+    lerror = ()
+    codigo = ''
 
-	if request.method == 'POST':
-		codigo = request.form['codigo']
+    if request.method == 'POST':
+        codigo = request.form['codigo']
 
-		llex, lerror = tokenize(codigo)
+        llex, lerror = tokenize(codigo)
 
-	return render_template('index.html', llex=llex, lerror=lerror, codigo=codigo)
-
+    return render_template(
+        'index.html', llex=llex, lerror=lerror, codigo=codigo
+    )
 
 
 if __name__ == "__main__":
