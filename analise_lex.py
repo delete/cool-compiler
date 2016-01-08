@@ -34,7 +34,7 @@ def tokenize(codigo):
         'LPAREN', 'RPAREN',
         'LBRACE', 'RBRACE', 'DELIMITER',
         'AT', 'EQUALS', 'TYPE', 'STRING', 'VAZIO', 'GREATER_THAN',
-        'LESS_THAN', 'PRECEDENCE', 'COMMA'
+        'LESS_THAN', 'GTE', 'LTE', 'PRECEDENCE', 'COMMA'
     ] + list(reserved.values())
 
     # Regex dos Tokens
@@ -52,13 +52,11 @@ def tokenize(codigo):
     t_RPAREN = r'\)'
     t_GREATER_THAN = r'<'
     t_LESS_THAN = r'>'
-    t_COMMA = ','
-
-    t_ignore = " \t|\r"
-
-    def t_PRECEDENCE(t):
-        r'@ | ~ | not | isvoid'
-        return t
+    t_GTE = r'>='
+    t_LTE = r'>='
+    t_COMMA = r','
+    t_PRECEDENCE = r'@ | ~ | not | isvoid'
+    t_ignore = ' \t|\r'
 
     def t_ID(t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
