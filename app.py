@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import render_template, request
 
-from analise_lex import tokenize
+from analise_lex import MyLex
 
 app = Flask(__name__)
 
@@ -14,8 +14,8 @@ def hello():
 
     if request.method == 'POST':
         codigo = request.form['codigo']
-
-        llex, lerror = tokenize(codigo)
+        l = MyLex()
+        llex, lerror = l.tokenize(codigo)
 
     return render_template(
         'index.html', llex=llex, lerror=lerror, codigo=codigo
