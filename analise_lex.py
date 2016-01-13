@@ -18,9 +18,8 @@ class MyLex(object):
     def _build_lexer(self):
         self.lexer = lex.lex(module=self.module)
 
-    def tokenize(self, newString=None):
-        if newString:
-            self.lexer.input(str(newString))
+    def tokenize(self, newString):
+        self.lexer.input(str(newString))
 
         while 1:
             tok = self.lexer.token()
