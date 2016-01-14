@@ -27,7 +27,7 @@ tokens = [
     'LPAREN', 'RPAREN',
     'LBRACE', 'RBRACE', 'DELIMITER',
     'AT', 'EQUALS', 'TYPE', 'STRING', 'VAZIO', 'GREATER_THAN',
-    'LESS_THAN', 'GTE', 'LTE', 'PRECEDENCE', 'COMMA'
+    'LESS_THAN', 'GTE', 'LTE', 'PRECEDENCE', 'COMMA', 'INT_COMPLEMENT'
 ] + list(reserved.values())
 
 # Regex dos Tokens
@@ -48,8 +48,8 @@ t_LESS_THAN = r'>'
 t_GTE = r'>='
 t_LTE = r'>='
 t_COMMA = r','
-t_PRECEDENCE = r'@ | ~ | not | isvoid'
 t_ignore = ' \t|\r'
+t_INT_COMPLEMENT = r'~'
 
 
 def t_ID(t):
