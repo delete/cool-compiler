@@ -50,6 +50,7 @@ t_LTE = r'>='
 t_COMMA = r','
 t_ignore = ' \t|\r'
 t_INT_COMPLEMENT = r'~'
+t_PRECEDENCE = r'@ | ~ | not | isvoid'
 
 
 def t_ID(t):
