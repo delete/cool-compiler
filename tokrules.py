@@ -1,61 +1,61 @@
 # Reserved words
-reserved = {
-   'class': 'CLASS',
-   'else': 'ELSE',
-   'if': 'IF',
-   'fi': 'FI',
-   'in': 'IN',
-   'isvoid': 'ISVOID',
-   'let': 'LET',
-   'loop': 'LOOP',
-   'pool': 'POOL',
-   'then': 'THEN',
-   'while': 'WHILE',
-   'case': 'CASE',
-   'esac': 'ESAC',
-   'new': 'NEW',
-   'of': 'OF',
-   'not': 'NOT',
-   'inherits': 'INHERITS',
-   'false': 'FALSE',
-   'true': 'TRUE',
-}
+reserved = [
+    'class', 'in', 'inherits', 'isvoid', 'let', 'new', 'of', 'not',
+    'loop', 'pool', 'case', 'esac', 'if', 'then', 'else', 'fi', 'while'
+]
 
 tokens = [
-    'ID', 'REAL', 'INT',
-    'PLUS', 'MINUS', 'TIMES', 'DIVIDE',
-    'LPAREN', 'RPAREN',
-    'LBRACE', 'RBRACE', 'DELIMITER',
-    'AT', 'EQUALS', 'TYPE', 'STRING', 'VAZIO', 'GREATER_THAN',
-    'LESS_THAN', 'GTE', 'LTE', 'PRECEDENCE', 'COMMA', 'INT_COMPLEMENT'
-] + list(reserved.values())
+   'COMMENTINLINE', 'DARROW', 'CLASS', 'IN', 'INHERITS', 'ISVOID', 'LET',
+   'NEW', 'OF', 'NOT', 'LOOP', 'POOL', 'CASE', 'ESAC', 'IF', 'THEN', 'ELSE',
+   'FI', 'WHILE', 'ASSIGN', 'LE', 'PLUS', 'MINUS', 'MULT', 'DIV', 'LPAREN',
+   'RPAREN', 'LBRACE', 'RBRACE', 'DOT', 'COLON', 'COMMA', 'SEMI', 'EQ',
+   'NEG', 'LT', 'AT', 'TYPEID', 'OBJECTID', 'INT_CONST', 'STR_CONST',
+   'COMMENT', 'BOOL_CONST'
+]
 
 # Regex dos Tokens
-t_EQUALS = r'\='
-t_AT = r'<-'
-t_LBRACE = r'\{'
-t_RBRACE = r'\}'
-t_DELIMITER = r'\;'
+t_DARROW = '=>'
+t_ASSIGN = '<-'
+t_LE = '<='
 t_PLUS = r'\+'
 t_MINUS = r'-'
-t_TIMES = r'\*'
-t_DIVIDE = r'/'
-t_TYPE = r'\:'
+t_MULT = r'\*'
+t_DIV = r'/'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
-t_GREATER_THAN = r'<'
-t_LESS_THAN = r'>'
-t_GTE = r'>='
-t_LTE = r'>='
-t_COMMA = r','
-t_ignore = ' \t|\r'
-t_INT_COMPLEMENT = r'~'
-t_PRECEDENCE = r'@ | ~ | not | isvoid'
+t_LBRACE = r'\{'
+t_RBRACE = r'\}'
+t_DOT = r'\.'
+t_COLON = ':'
+t_COMMA = ','
+t_SEMI = ';'
+t_EQ = '='
+t_NEG = '~'
+t_LT = '<'
+t_AT = '@'
+
+t_ignore = ' \t\r\f'
 
 
+# Handle objects_types_and_reserved_words
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value, 'ID')    # Check for reserved words
+    if t.value == 'true':
+        t.type = 'BOOL_CONST'
+        t.value = True
+        return t
+    if t.value == 'false':
+        t.type = 'BOOL_CONST'
+        t.value = False
+        return t
+
+    if t.value.lower() in reserved:
+        t.type = t.value.upper()
+    else:
+        if t.value[0].islower():
+            t.type = 'OBJECTID'
+        else:
+            t.type = 'TYPEID'
     return t
 
 
@@ -66,43 +66,21 @@ def t_COMMENT(t):
 
 def t_STRING(t):
     r'\".*\n*\s*.*\"'
-    # Tira as aspas
-    t.value = t.value[1:-1].decode("string-escape")
+    # Tira as aspas (only python 2)
+    #t.value = t.value[1:-1].decode("string-escape")
+    t.type = 'STR_CONST'
     return t
 
 
-def t_REAL(t):
-    r'[0-9]+([.,][0-9]+)+'
-    try:
-        t.value = t.value
-    except ValueError:
-        print("REAL value too large %d", t.value)
-        t.value = 0
-    return t
-
-
-def t_INT(t):
-    r'[0-9]+'
-    try:
-        t.value = int(t.value)
-    except ValueError:
-        print("Integer value too large %d", t.value)
-        t.value = 0
+def t_INT_CONST(t):
+    r'\d+'
+    t.value = int(t.value)
     return t
 
 
 def t_NEWLINE(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
-
-
-def t_EMPTY(t):
-    r'^\n|^\s+|^\t|^\f|^\v|^\r'
-    pass
-
-
-def t_DOT(t):
-    r'\.'
 
 
 lerror = []
