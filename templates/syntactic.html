@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+
+<div class="panel panel-default">
+        <div class="panel-body">
+        <form action="" method="post">
+            <textarea id="fonte" name="code" class="form-control" placeholder="Digite aqui o código fonte" rows="10">{{code}}</textarea><br>
+            <p><button  class="btn btn-primary" type="submit"  >Análise Sintática</button></p>
+            
+        </form>
+    </div>
+</div>
+
+{% if serror or result %}
+
+<div class="jumbotron">
+        
+        <h1>Análise</h1>
+        <p>Resultado da análise sintática:</p>
+        
+        {% if  serror %}
+            
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>Lexema</th>
+                        <th>Linha</th>
+                        <th>Coluna</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for error in serror %}                   
+                
+                    <tr class="danger">
+                        {% for e in error %}
+                            <td>{{ e }}</td>
+                            
+                        {% endfor %}
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        {% if result %}
+            <p class="text-center">
+                <img src="{{ url_for('static', filename='img/approved.jpg') }}">
+            </p>
+        {% endif %}
+
+
+</div>
+
+{% endif %}
+
+{% endblock %}
