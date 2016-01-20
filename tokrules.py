@@ -67,7 +67,7 @@ def t_COMMENT(t):
 def t_STRING(t):
     r'\".*\n*\s*.*\"'
     # Tira as aspas (only python 2)
-    #t.value = t.value[1:-1].decode("string-escape")
+    t.value = t.value[1:-1].decode("string-escape")
     t.type = 'STR_CONST'
     return t
 
