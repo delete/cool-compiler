@@ -95,6 +95,10 @@ def syntactic(string):
         '''expression : OBJECTID ASSIGN expression'''
         p[0] = Assign(Object(p[1]), p[3])
 
+    def p_expression_dispatch(p):
+        '''expression : expression DOT OBJECTID LPAREN expr_list RPAREN'''
+        p[0] = Dispatch(p[1], p[3], p[5])
+
     def p_expr_list_many(p):
         '''expr_list : expr_list COMMA expression'''
         p[0] = p[1] + [p[3]]
