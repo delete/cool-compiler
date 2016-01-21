@@ -235,12 +235,4 @@ if __name__ == '__main__':
             print('\nOK!\n')
             #print(result)
     else:
-        while True:
-            try:
-                s = input('cool> ')
-            except EOFError:
-                break
-            if not s:
-                continue
-            result, errors = syntactic(s)
-            print(result)
+        print('A cool file is required.')
