@@ -9,7 +9,7 @@ class Foo inherits Bazz {
 
      b : Int <- a.doh() + g.doh() + doh() + printh();
 
-     doh() : Int { (let i : Int <- h in { h <- h + 2; i; } ) };
+    -- doh() : Int { (let i : Int <- h in { h <- h + 2; i; } ) };
 
 };
 
@@ -47,7 +47,7 @@ class Bazz inherits IO {
 
      printh() : Int { { out_int(h); 0; } };
 
-     doh() : Int { (let i: Int <- h in { h <- h + 1; i; } ) };
+     -- doh() : Int { (let i: Int <- h in { h <- h + 1; i; } ) };
 };
 
 (* scary . . . *)
@@ -57,7 +57,8 @@ class Main inherits IO {
   c : Razz <- new Razz;
   d : Bar <- new Bar;
 
-  main(): String { { out_string("\n") ; "do nothing" ; } };
+ -- main(): String { { out_string("\n") ; "do nothing" ; } };
+ main(): String { out_string("\n")};
 
 };
 

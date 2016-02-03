@@ -1,0 +1,2 @@
+class SemantError(Exception):
+    pass
