@@ -1,8 +1,8 @@
 from flask import Flask
 from flask import render_template, request
 
-from analise_lex import MyLex
-from analise_sint import syntactic as syn
+from src.analise_lex import MyLex
+from src.analise_sint import syntactic as syn
 
 
 app = Flask(__name__)
