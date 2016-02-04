@@ -13,12 +13,12 @@ class Semant(object):
         self.parents = defaultdict(set)
 
     def build(self):
-        self.create_default_classes()
-        self.create_inheritance()
-        self.check_undefined_classes()
+        self.__create_default_classes()
+        self.__create_inheritance()
+        self.__check_undefined_classes()
         self.__check_inheritance_cycles()
 
-    def create_default_classes(self):
+    def __create_default_classes(self):
         # Object there is no parent
         objc = Class("Object", None, [
             Method('abort', [], 'Object', None),
@@ -42,7 +42,7 @@ class Semant(object):
 
         self.ast += [objc, ioc, stringc]
 
-    def create_inheritance(self):
+    def __create_inheritance(self):
         '''
             Create two structures:
             One with all the classes and another with all
@@ -57,7 +57,7 @@ class Semant(object):
             if _class.name != 'Object':
                 self.parents[_class.parent].add(_class.name)
 
-    def check_undefined_classes(self):
+    def __check_undefined_classes(self):
         parents = self.parents.keys()
         for parent in parents:
 
