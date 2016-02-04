@@ -17,8 +17,6 @@ if __name__ == '__main__':
         print("Cannot parse!")
         sys.exit(1)
 
-    parents = semant(ast[0])
-    print('\nAST\n\n')
+    semant(ast[0])
+    print('\n\n====== AST ======\n\n')
     print(ast[0])
-    print('\nPARENTS\n\n')
-    print(parents)

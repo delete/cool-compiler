@@ -16,6 +16,7 @@ class Semant(object):
         self.create_default_classes()
         self.create_inheritance()
         self.check_undefined_classes()
+        self.__check_inheritance_cycles()
 
     def create_default_classes(self):
         # Object there is no parent
@@ -68,10 +69,50 @@ class Semant(object):
                     message % (class_name, parent)
                 )
 
+    def __check_inheritance_cycles(self):
+        '''
+            First, set every class(including parents) as False.
+            Then, visit each class and their childs.
+        '''
+        visited = {}
+        for parent_name in self.parents.keys():
+            visited[parent_name] = False
+            for class_name in self.parents[parent_name]:
+                visited[class_name] = False
+
+        print('\n\n====== VISITED BEFORE ======\n\n')
+        print(visited)
+
+        self.__visit_tree('Object', visited)
+
+        print('\n\n====== VISITED AFTER ======\n\n')
+        print(visited)
+
+        # If some class has False value, means that the visitor
+        # couldn't get in that class. So, some class is missing.
+        for key, value in visited.items():
+            if not value:
+                raise SemantError('%s is in a inheritance cycle' % key)
+
+    def __visit_tree(self, _class, visited):
+        visited[_class] = True
+        print('\nClass: %s\n' % _class)
+        print('\nVisited status: %s\n' % visited)
+
+        # If a _class is not in parents,
+        # it is not a parent, so, don't have childs. Get out.
+        if _class not in self.parents.keys():
+            print('%s is not a parent!' % _class)
+            return
+
+        for child in self.parents[_class]:
+            self.__visit_tree(child, visited)
+
 
 def semant(ast):
     s = Semant(ast)
     s.build()
-    print('\n\nCLASSES\n\n')
+    print('\n\n====== CLASSES ======\n\n')
     print(s.classes)
-    return s.parents
+    print('\n\n====== PARENTS ======\n\n')
+    print(s.parents)
