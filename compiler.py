@@ -1,7 +1,8 @@
 import sys
 
-from src.analise_sint import syntactic
-from src.analise_sem import semant
+from src import syntactic
+from src import semant
+from src import lex
 
 
 if __name__ == '__main__':
@@ -11,6 +12,13 @@ if __name__ == '__main__':
 
     with open(sys.argv[1]) as file:
         code = file.read()
+
+    l = lex()
+    llex, lerror = l.tokenize(code)
+    if lerror:
+        print('Lex - EROOR')
+        print(lerror)
+        sys.exit(1)
 
     ast = syntactic(code)
     if ast is None:

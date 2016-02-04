@@ -233,7 +233,5 @@ if __name__ == '__main__':
         result, errors = syntactic(data)
         if result:
             print('\nOK!\n')
-            print(dir(result[0].feature_list[0]))
-            print(result[0].feature_list[0])
     else:
         print('A cool file is required.')
