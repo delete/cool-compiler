@@ -21,8 +21,8 @@ if __name__ == '__main__':
         sys.exit(1)
 
     ast = syntactic(code)
-    if ast is None:
-        print("Cannot parse!")
+    if ast[0] is None:
+        print("Sintatic - ERROR")
         sys.exit(1)
 
     semant(ast[0])
