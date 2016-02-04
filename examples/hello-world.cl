@@ -3,8 +3,7 @@ class Main inherits IO {
         {
             out_string("Hello, world.\n");
             a <- 2; 
-            b <- 3; 
-            ^
+            b <- 3;
         }
     };
 }; 
