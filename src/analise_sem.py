@@ -6,7 +6,7 @@ from myexceptions import SemantError
 
 
 class Semant(object):
-    """docstring for Semant"""
+    """ Analyzes semantically the code. """
 
     def __init__(self, ast):
         self.ast = ast
@@ -34,6 +34,7 @@ class Semant(object):
             Method('in_string', [], 'String', None),
             Method('in_int', [], 'Int', None),
         ])
+        # String inherits from Object
         stringc = Class("String", "Object", [
             Method('length', [], 'Int', None),
             Method('concat', [('arg', 'String')], 'String', None),
@@ -45,11 +46,11 @@ class Semant(object):
         self.ast += [objc, ioc, stringc]
 
     def __create_inheritance(self):
-        '''
+        """
             Create two structures:
             One with all the classes and another with all
             parents classes.
-        '''
+        """
         for _class in self.ast:
             if _class.name in self.classes:
                 raise SemantError('Class %s already defined!' % _class.name)
@@ -60,9 +61,12 @@ class Semant(object):
                 self.parents[_class.parent].add(_class.name)
 
     def __check_undefined_classes(self):
+        """
+            Check if every parent is defined in classes table. (self.classes)
+        """
         parents = self.parents.keys()
-        for parent in parents:
 
+        for parent in parents:
             if parent not in self.classes:
                 class_name = self.parents[parent]
                 message = 'Classe %s inherit from an undefined parent %s'
@@ -72,23 +76,20 @@ class Semant(object):
                 )
 
     def __check_inheritance_cycles(self):
-        '''
+        """
+            Check if every class has your right parent and children.
+
             First, set every class(including parents) as False.
             Then, visit each class and their childs.
-        '''
+        """
         visited = {}
         for parent_name in self.parents.keys():
             visited[parent_name] = False
-            for class_name in self.parents[parent_name]:
-                visited[class_name] = False
+            for child_name in self.parents[parent_name]:
+                visited[child_name] = False
 
-        print('\n\n====== VISITED BEFORE ======\n\n')
-        print(visited)
-
+        # Visit every class, recursively, starting with Object
         self.__visit_tree('Object', visited)
-
-        print('\n\n====== VISITED AFTER ======\n\n')
-        print(visited)
 
         # If some class has False value, means that the visitor
         # couldn't get in that class. So, some class is missing.
@@ -98,8 +99,6 @@ class Semant(object):
 
     def __visit_tree(self, _class, visited):
         visited[_class] = True
-        print('\nClass: %s\n' % _class)
-        print('\nVisited status: %s\n' % visited)
 
         # If a _class is not in parents,
         # it is not a parent, so, don't have childs. Get out.
@@ -111,10 +110,10 @@ class Semant(object):
             self.__visit_tree(child, visited)
 
     def __recursive_inheritence(self, _class='Object'):
-        '''
+        """
             Check attributes and methods from inheritance and
             if it is ok, add them from parent to child.
-        '''
+        """
         cl = self.classes[_class]
 
         if cl.parent:
@@ -147,7 +146,7 @@ class Semant(object):
 
             self.__add_attr_from_parent_to_child(cl, attrs_of_parent)
 
-        # Go recursively
+        # Go recursively to all children
         all_children = self.parents[_class]
         for child in all_children:
             self.__recursive_inheritence(child)
@@ -156,9 +155,9 @@ class Semant(object):
         return [i for i in _class.feature_list if isinstance(i, Attr)]
 
     def __check_same_attribute(self, parent, child):
-        '''
+        """
             It's illegal to redefine attribute names in child class.
-        '''
+        """
         for p_attr in parent:
             for c_attr in child:
                 if p_attr.name == c_attr.name:
@@ -183,12 +182,12 @@ class Semant(object):
         return method_signatures
 
     def __check_same_signature(self, child_methods, sig_parent, sig_child):
-        '''
+        """
             If a class "B" inherits a method "m" from an ancestor class "A",
             then "B" may override the inherited definition of "m" provided
             the number of arguments, the types of the formal parameters,
             and the return type are exactly the same in both definitions.
-        '''
+        """
         for method in child_methods:
             print(method)
             if method.name in sig_parent:
