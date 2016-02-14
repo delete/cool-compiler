@@ -189,7 +189,6 @@ class Semant(object):
             and the return type are exactly the same in both definitions.
         """
         for method in child_methods:
-            print(method)
             if method.name in sig_parent:
                 parent_signature = sig_parent[method.name]
                 child_signature = sig_child[method.name]
