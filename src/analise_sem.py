@@ -101,7 +101,7 @@ class Semant(object):
         visited[_class] = True
 
         # If a _class is not in parents,
-        # it is not a parent, so, don't have childs. Get out.
+        # it is not a parent, so, don't have children. Get out.
         if _class not in self.parents.keys():
             print('%s is not a parent!' % _class)
             return
