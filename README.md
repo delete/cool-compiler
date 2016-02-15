@@ -1,4 +1,4 @@
-Compiler for [Cool Language](http://theory.stanford.edu/~aiken/software/cool/cool.html) created for the compilers' class from my Computer Scienci degrees.
+Compiler for [Cool Language](http://theory.stanford.edu/~aiken/software/cool/cool.html) created for the compilers' class from my Computer Science degrees.
 
 
 Install the requirements packages:
