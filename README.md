@@ -5,7 +5,7 @@ Install the requirements packages:
 
 `pip install -r requirements.txt`
 
-Then, execute the web app():
+Then, execute the web app:
 
 > Only lexical and syntatic analyzers is working in web app for now.
 
