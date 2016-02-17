@@ -18,7 +18,7 @@ class Semant(object):
         self.__create_inheritance()
         self.__check_undefined_classes()
         self.__check_inheritance_cycles()
-        self.__recursive_inheritence()
+        self.__check_inheritence_and_add_methods_in_children()
 
     def __create_default_classes(self):
         # Object there is no parent
@@ -109,7 +109,7 @@ class Semant(object):
         for child in self.parents[_class]:
             self.__visit_tree(child, visited)
 
-    def __recursive_inheritence(self, _class='Object'):
+    def __check_inheritence_and_add_methods_in_children(self, _class='Object'):
         """
             Check attributes and methods from inheritance and
             if it is ok, add them from parent to child.
@@ -149,7 +149,7 @@ class Semant(object):
         # Go recursively to all children
         all_children = self.parents[_class]
         for child in all_children:
-            self.__recursive_inheritence(child)
+            self.__check_inheritence_and_add_methods_in_children(child)
 
     def __get_attributes(self, _class):
         return [i for i in _class.feature_list if isinstance(i, Attr)]
