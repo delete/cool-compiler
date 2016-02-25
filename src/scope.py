@@ -26,6 +26,13 @@ class Scope():
     def destroy(self):
         del self.store[-1]
 
+    def exists(self, key):
+        try:
+            self.get(key)
+            return True
+        except KeyError:
+            return False
+
 
 if __name__ == '__main__':
     scope = Scope()
