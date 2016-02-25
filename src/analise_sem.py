@@ -268,8 +268,11 @@ class Semant(object):
 
                     for feat, called in formals:
                         # Test if the argument types are not equals
-                        # [0] is the name and [1] the type
-                        if feat[1] != check_expression_type(called, _class):
+                        expression_type = check_expression_type(
+                            called, _class, self.scope
+                        )
+                        # feat[0] is the name and feat[1] the type
+                        if feat[1] != expression_type:
                             m = "Argument %s passed to method %s in class %s have a different type"
                             try:
                                 # If is an Object, there is a name,
