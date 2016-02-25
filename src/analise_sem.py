@@ -3,6 +3,7 @@ from copy import deepcopy
 
 from ast import *
 from myexceptions import SemantError
+from scope import Scope
 
 
 class Semant(object):
@@ -12,13 +13,17 @@ class Semant(object):
         self.ast = ast
         self.classes = {}
         self.parents = defaultdict(set)
+        self.scope = Scope()
 
     def build(self):
         self.__create_default_classes()
-        self.__create_inheritance()
+        self.__create_symbol_tables()
         self.__check_undefined_classes()
         self.__check_inheritance_cycles()
         self.__check_inheritence_and_add_methods_in_children()
+
+        for _class in self.classes.keys():
+            self.__check_scope(self.classes[_class])
 
     def __create_default_classes(self):
         # Object there is no parent
@@ -45,9 +50,9 @@ class Semant(object):
 
         self.ast += [objc, ioc, stringc]
 
-    def __create_inheritance(self):
+    def __create_symbol_tables(self):
         """
-            Create two structures:
+            Create two tables:
             One with all the classes and another with all
             parents classes.
         """
@@ -103,7 +108,6 @@ class Semant(object):
         # If a _class is not in parents,
         # it is not a parent, so, don't have children. Get out.
         if _class not in self.parents.keys():
-            print('%s is not a parent!' % _class)
             return
 
         for child in self.parents[_class]:
@@ -152,7 +156,7 @@ class Semant(object):
             self.__check_inheritence_and_add_methods_in_children(child)
 
     def __get_attributes(self, _class):
-        return [i for i in _class.feature_list if isinstance(i, Attr)]
+        return [i for i in _class.feature_list if isAttribute(i)]
 
     def __check_same_attribute(self, parent, child):
         """
@@ -167,7 +171,7 @@ class Semant(object):
                     )
 
     def __get_methods(self, _class):
-        return [i for i in _class.feature_list if isinstance(i, Method)]
+        return [i for i in _class.feature_list if isMethod(i)]
 
     def __get_signatures(self, methods):
         method_signatures = {}
@@ -212,8 +216,132 @@ class Semant(object):
             # Add at the beginning
             _cl.feature_list.insert(0, deepcopy(attr))
 
+    def __check_scope(self, _class):
+        for feature in _class.feature_list:
+            _type = self.__get_return_type(feature, _class)
+
+            if isAttribute(feature):
+                self.scope.add(feature.name, _type)
+
+            elif isMethod(feature):
+                self.scope.add(feature.name, (feature.formal_list, _type))
+                self.__check_children_scope(feature.body, _class)
+
+    def __check_children_scope(self, expression, _class):
+        if isinstance(expression, Block):
+            self.scope.new()
+
+            for expr in expression.body:
+                self.__check_children_scope(expr, _class)
+
+            self.scope.destroy()
+
+        elif isinstance(expression, Dispatch):
+            self.__check_children_scope(expression.body, _class)
+
+            # Get return type
+            if expression.body == 'self':
+                _class_name = _class.name
+            else:
+                _class_name = expression.body.return_type
+
+            # Get the whole class' structure
+            _class_content = self.classes[_class_name]
+
+            called_method = False
+
+            # Parse the structure untill match the method name
+            for feature in _class_content.feature_list:
+                if isMethod(feature) and feature.name == expression.method:
+                    called_method = True
+
+                    if len(feature.formal_list) != len(expression.expr_list):
+                        msg = "Tried to call method %s in class %s with wrong number of arguments"
+                        raise SemantError(
+                            msg % (feature.name, _class_name)
+                        )
+
+                    formals = zip(
+                        feature.formal_list, expression.expr_list,
+                    )
+
+                    for feat, called in formals:
+                        # Test if the argument types are not equals
+                        # [0] is the name and [1] the type
+                        if feat[1] != self.__check_expression(called, _class):
+                            m = "Argument %s passed to method %s in class %s have a different type"
+                            try:
+                                # If is an Object, there is a name,
+                                content_or_name = called.name
+                            except AttributeError:
+                                # if not, there is a content instead
+                                content_or_name = called.content
+                            raise SemantError(
+                                m % (content_or_name, feature.name, _class_name)
+                            )
+
+                    # Test if the returns types are not equals
+                    feature_type = _class_name
+                    feature_type = self.__get_return_type(feature, _class)
+
+                    if feature_type != feature_type:
+                        msg = "The method %s in class %s returns wrong type"
+                        raise SemantError(
+                            msg % (feature.name, _class_name)
+                        )
+            # If didn't match the method name...
+            if not called_method:
+                msg = 'A undefined method %s was called in class %s'
+                raise SemantError(msg % (expression.method, _class_name))
+
+    def __get_return_type(self, feature, _class):
+        try:
+            # For Attr
+            _type = feature.type
+        except AttributeError:
+            # For Method
+            _type = feature.return_type
+
+        if _type == 'SELF_TYPE':
+            _type = _class.name
+
+        return _type
+
+    def __check_expression(self, expression, _class):
+        """
+            Returns the type of the expression.
+
+            If the type if self, then returns the name of the
+            class.
+        """
+        if isinstance(expression, Str):
+            return 'String'
+
+        elif isinstance(expression, Object):
+            if expression.name == "self":
+                return _class.name
+
+            if not self.scope.exists(expression.name):
+                raise SemantError(
+                    "Variable %s is not in scope" % expression.name
+                )
+
+            return self.scope.get(expression.name)
+
+        elif isinstance(expression, Int):
+            return "Int"
+
+
+def isMethod(feature):
+    return isinstance(feature, Method)
+
+
+def isAttribute(feature):
+    return isinstance(feature, Attr)
+
 
 def semant(ast):
+    print('\n\n====== DEBUGGING ======\n\n')
     s = Semant(ast)
     s.build()
     print('\n\n====== CLASSES ======\n\n')
