@@ -2,7 +2,12 @@ from collections import defaultdict
 from copy import deepcopy
 
 from ast import *
-from myexceptions import SemantError
+from myexceptions import (
+    UndefinedMethodError, ReturnedTypeError,
+    NumberOfArgumentError, RedefinedMethodError, RedefinedAttributeError,
+    UndefinedParentError, ClassAlreadyDefinedError, InheritanceError,
+    ArgumentTypeError
+)
 from scope import Scope
 from checktype import check_expression_type, returned_type
 
@@ -59,7 +64,8 @@ class Semant(object):
         """
         for _class in self.ast:
             if _class.name in self.classes:
-                raise SemantError('Class %s already defined!' % _class.name)
+                raise ClassAlreadyDefinedError(_class.name)
+
             else:
                 self.classes[_class.name] = _class
 
@@ -75,11 +81,7 @@ class Semant(object):
         for parent in parents:
             if parent not in self.classes:
                 class_name = self.parents[parent]
-                message = 'Classe %s inherit from an undefined parent %s'
-
-                raise SemantError(
-                    message % (class_name, parent)
-                )
+                raise UndefinedParentError(class_name, parent)
 
     def __check_inheritance_cycles(self):
         """
@@ -101,7 +103,7 @@ class Semant(object):
         # couldn't get in that class. So, some class is missing.
         for key, value in visited.items():
             if not value:
-                raise SemantError('%s is in a inheritance cycle' % key)
+                raise InheritanceError(key)
 
     def __visit_tree(self, _class, visited):
         visited[_class] = True
@@ -127,7 +129,9 @@ class Semant(object):
             attrs_of_parent = self.__get_attributes(_class_parent)
             attrs_of_child = self.__get_attributes(cl)
 
-            self.__check_same_attribute(attrs_of_parent, attrs_of_child)
+            self.__check_same_attribute(
+                attrs_of_parent, attrs_of_child, _class
+            )
 
             methods_of_parent = self.__get_methods(_class_parent)
             methods_of_child = self.__get_methods(cl)
@@ -159,17 +163,14 @@ class Semant(object):
     def __get_attributes(self, _class):
         return [i for i in _class.feature_list if isAttribute(i)]
 
-    def __check_same_attribute(self, parent, child):
+    def __check_same_attribute(self, parent, child, _class):
         """
             It's illegal to redefine attribute names in child class.
         """
         for p_attr in parent:
             for c_attr in child:
                 if p_attr.name == c_attr.name:
-                    raise SemantError(
-                        "Attribute cannot be redefined \
-                        in child class %s" % cl.name
-                    )
+                    raise RedefinedAttributeError(_class)
 
     def __get_methods(self, _class):
         return [i for i in _class.feature_list if isMethod(i)]
@@ -199,11 +200,7 @@ class Semant(object):
                 child_signature = sig_child[method.name]
 
                 if parent_signature != child_signature:
-                    raise SemantError(
-                        "Redefined method %s cannot change arguments or \
-                        return type, they must be the same of the parent \
-                        method" % method.name
-                    )
+                    raise RedefinedMethodError(method.name)
 
     def __add_method_from_parent_to_child(self, _cl, p_methods, c_methods):
         for method in p_methods:
@@ -257,46 +254,31 @@ class Semant(object):
                     called_method = True
 
                     if len(feature.formal_list) != len(expression.expr_list):
-                        msg = "Tried to call method %s in class %s with wrong number of arguments"
-                        raise SemantError(
-                            msg % (feature.name, _class_name)
-                        )
+                        raise NumberOfArgumentError(feature.name, _class_name)
 
                     formals = zip(
                         feature.formal_list, expression.expr_list,
                     )
 
+                    # Test if the arguments types are not equals
                     for feat, called in formals:
-                        # Test if the argument types are not equals
                         expression_type = check_expression_type(
                             called, _class, self.scope
                         )
                         # feat[0] is the name and feat[1] the type
                         if feat[1] != expression_type:
-                            m = "Argument %s passed to method %s in class %s have a different type"
-                            try:
-                                # If is an Object, there is a name,
-                                content_or_name = called.name
-                            except AttributeError:
-                                # if not, there is a content instead
-                                content_or_name = called.content
-                            raise SemantError(
-                                m % (content_or_name, feature.name, _class_name)
-                            )
+                            raise ArgumentTypeError(feature, _class_name)
 
                     # Test if the returns types are not equals
-                    feature_type = _class_name
+                    called_method_type = _class_name
                     feature_type = returned_type(feature, _class)
 
-                    if feature_type != feature_type:
-                        msg = "The method %s in class %s returns wrong type"
-                        raise SemantError(
-                            msg % (feature.name, _class_name)
-                        )
+                    if feature_type != called_method_type:
+                        raise ReturnedTypeError(feature.name, _class_name)
+
             # If didn't match the method name...
             if not called_method:
-                msg = 'A undefined method %s was called in class %s'
-                raise SemantError(msg % (expression.method, _class_name))
+                raise UndefinedMethodError(expression.method, _class_name)
 
 
 def isMethod(feature):
