@@ -9,7 +9,9 @@ from myexceptions import (
     ArgumentTypeError
 )
 from scope import Scope
-from checktype import check_expression_type, returned_type
+from checktype import (
+    check_expression_type, returned_type, isAttribute, isMethod
+)
 
 
 class Semant(object):
@@ -279,14 +281,6 @@ class Semant(object):
             # If didn't match the method name...
             if not called_method:
                 raise UndefinedMethodError(expression.method, _class_name)
-
-
-def isMethod(feature):
-    return isinstance(feature, Method)
-
-
-def isAttribute(feature):
-    return isinstance(feature, Attr)
 
 
 def semant(ast):

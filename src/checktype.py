@@ -39,3 +39,11 @@ def check_expression_type(expression, _class, scope):
 
     elif isinstance(expression, Int):
         return "Int"
+
+
+def isMethod(feature):
+    return isinstance(feature, Method)
+
+
+def isAttribute(feature):
+    return isinstance(feature, Attr)
