@@ -157,7 +157,7 @@ class Semant(object):
 
             self.__add_attr_from_parent_to_child(cl, attrs_of_parent)
 
-        # Go recursively to all children
+        # Goes recursively to all children
         all_children = self.parents[_class]
         for child in all_children:
             self.__check_inheritence_and_add_methods_in_children(child)
