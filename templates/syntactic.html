@@ -29,17 +29,14 @@
                         <th>Token</th>
                         <th>Lexema</th>
                         <th>Linha</th>
-                        <th>Coluna</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for error in serror %}                   
-                
+                {% for error in serror %}
                     <tr class="danger">
-                        {% for e in error %}
-                            <td>{{ e }}</td>
-                            
-                        {% endfor %}
+                        <td>{{ error.0 }}</td>
+                        <td>{{ error.1 }}</td>
+                        <td>{{ error.2 }}</td>
                     </tr>
 
                 {% endfor %}
