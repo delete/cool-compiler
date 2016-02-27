@@ -160,6 +160,36 @@ def syntactic(string):
         '''expression : WHILE expression LOOP expression POOL'''
         p[0] = While(p[2], p[4])
 
+    def p_expression_let(p):
+        """expression : LET OBJECTID COLON TYPEID IN expression
+           expression : LET OBJECTID COLON TYPEID COMMA inner_lets"""
+        p[0] = Let(p[2], p[4], None, p[6])
+
+    def p_expression_let_initialized(p):
+        """expression : LET OBJECTID COLON TYPEID ASSIGN expression IN expression
+           expression : LET OBJECTID COLON TYPEID ASSIGN expression COMMA inner_lets"""
+        p[0] = Let(p[2], p[4], p[6], p[8])
+
+    def p_expression_let_with_error_in_first_decl(p):
+        """expression : LET error COMMA OBJECTID COLON TYPEID IN expression
+           expression : LET error COMMA OBJECTID COLON TYPEID COMMA inner_lets"""
+        p[0] = Let(p[4], p[6], None, p[8])
+
+    def p_expression_let_initialized_with_error_in_first_decl(p):
+        """expression : LET error COMMA OBJECTID COLON TYPEID ASSIGN expression IN expression
+           expression : LET error COMMA OBJECTID COLON TYPEID ASSIGN expression COMMA inner_lets"""
+        p[0] = Let(p[4], p[6], p[8], p[10])
+
+    def p_inner_lets_simple(p):
+        """inner_lets : OBJECTID COLON TYPEID IN expression
+           inner_lets : OBJECTID COLON TYPEID COMMA inner_lets """
+        p[0] = Let(p[1], p[3], None, p[5])
+
+    def p_inner_lets_initialized(p):
+        """inner_lets : OBJECTID COLON TYPEID ASSIGN expression IN expression
+           inner_lets : OBJECTID COLON TYPEID ASSIGN expression COMMA inner_lets"""
+        p[0] = Let(p[1], p[3], p[5], p[7])
+
     def p_expression_case(p):
         '''expression : CASE expression OF case_list ESAC'''
         p[0] = Case(p[2], p[4])
