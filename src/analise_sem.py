@@ -6,7 +6,7 @@ from myexceptions import (
     UndefinedMethodError, ReturnedTypeError,
     NumberOfArgumentError, RedefinedMethodError, RedefinedAttributeError,
     UndefinedParentError, ClassAlreadyDefinedError, InheritanceError,
-    ArgumentTypeError
+    ArgumentTypeError, DeclaredTypeError
 )
 from scope import Scope
 from checktype import (
@@ -281,6 +281,23 @@ class Semant(object):
             # If didn't match the method name...
             if not called_method:
                 raise UndefinedMethodError(expression.method, _class_name)
+
+        elif isinstance(expression, Let):
+            self.scope.new()
+            self.scope.add(expression.object, expression.type)
+            print(self.scope.store)
+
+            # Test if the declared type is the same type as
+            # the given value
+            value_type = check_expression_type(
+                expression.init, _class, self.scope
+            )
+            if expression.type != value_type:
+                raise DeclaredTypeError(expression.type, value_type)
+
+            self.__check_children_scope(expression.body, _class)
+
+            self.scope.destroy()
 
 
 def semant(ast):

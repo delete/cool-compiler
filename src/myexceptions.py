@@ -71,3 +71,12 @@ class InheritanceError(SemantError):
     def __init__(self, class_name):
         msg = '%s is in a inheritance cycle'
         super(InheritanceError, self).__init__(msg % (class_name))
+
+
+class DeclaredTypeError(SemantError):
+
+    def __init__(self, expression_type, value_type):
+        msg = 'Let init %s is not equal to the declared type %s'
+        super(DeclaredTypeError, self).__init__(
+            msg % (value_type, expression_type)
+        )
