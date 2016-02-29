@@ -31,7 +31,7 @@ class Semant(object):
         self.__check_inheritence_and_add_methods_in_children()
 
         for _class in self.classes.keys():
-            self.__check_scope(self.classes[_class])
+            self.__check_scope_and_type(self.classes[_class])
 
     def __create_default_classes(self):
         # Object there is no parent
@@ -216,7 +216,18 @@ class Semant(object):
             # Add at the beginning
             _cl.feature_list.insert(0, deepcopy(attr))
 
-    def __check_scope(self, _class):
+    def __check_scope_and_type(self, _class):
+        """
+            Check scope and type for each class.
+
+            If it's a method, goes recursively inside the body.
+
+            When a scope is created?
+            With a new block, let, case,
+
+            OBS: Every attribute is private and every method is public.
+        """
+
         for feature in _class.feature_list:
             _type = returned_type(feature, _class)
 
@@ -225,19 +236,19 @@ class Semant(object):
 
             elif isMethod(feature):
                 self.scope.add(feature.name, (feature.formal_list, _type))
-                self.__check_children_scope(feature.body, _class)
+                self.__check_children(feature.body, _class)
 
-    def __check_children_scope(self, expression, _class):
+    def __check_children(self, expression, _class):
         if isinstance(expression, Block):
             self.scope.new()
 
             for expr in expression.body:
-                self.__check_children_scope(expr, _class)
+                self.__check_children(expr, _class)
 
             self.scope.destroy()
 
         elif isinstance(expression, Dispatch):
-            self.__check_children_scope(expression.body, _class)
+            self.__check_children(expression.body, _class)
 
             # Get return type
             if expression.body == 'self':
@@ -285,7 +296,6 @@ class Semant(object):
         elif isinstance(expression, Let):
             self.scope.new()
             self.scope.add(expression.object, expression.type)
-            print(self.scope.store)
 
             # Test if the declared type is the same type as
             # the given value
@@ -295,7 +305,7 @@ class Semant(object):
             if expression.type != value_type:
                 raise DeclaredTypeError(expression.type, value_type)
 
-            self.__check_children_scope(expression.body, _class)
+            self.__check_children(expression.body, _class)
 
             self.scope.destroy()
 
