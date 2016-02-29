@@ -80,3 +80,12 @@ class DeclaredTypeError(SemantError):
         super(DeclaredTypeError, self).__init__(
             msg % (value_type, expression_type)
         )
+
+
+class AttributeTypeError(SemantError):
+
+    def __init__(self, expression, value_type):
+        msg = 'Expression %s was declared as %s and was passed %s'
+        super(AttributeTypeError, self).__init__(
+            msg % (expression.name, expression.type, value_type)
+        )

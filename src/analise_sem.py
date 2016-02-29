@@ -6,11 +6,11 @@ from myexceptions import (
     UndefinedMethodError, ReturnedTypeError,
     NumberOfArgumentError, RedefinedMethodError, RedefinedAttributeError,
     UndefinedParentError, ClassAlreadyDefinedError, InheritanceError,
-    ArgumentTypeError, DeclaredTypeError
+    ArgumentTypeError, DeclaredTypeError, AttributeTypeError
 )
 from scope import Scope
 from checktype import (
-    check_expression_type, returned_type, isAttribute, isMethod
+    get_expression_type, returned_type, isAttribute, isMethod
 )
 
 
@@ -232,6 +232,13 @@ class Semant(object):
             _type = returned_type(feature, _class)
 
             if isAttribute(feature):
+                value_type = get_expression_type(
+                    feature.body, _class, self.scope
+                )
+                # Test if the attribute value type is the same as declared.
+                if feature.type != value_type:
+                    raise AttributeTypeError(feature, value_type)
+
                 self.scope.add(feature.name, _type)
 
             elif isMethod(feature):
@@ -275,7 +282,7 @@ class Semant(object):
 
                     # Test if the arguments types are not equals
                     for feat, called in formals:
-                        expression_type = check_expression_type(
+                        expression_type = get_expression_type(
                             called, _class, self.scope
                         )
                         # feat[0] is the name and feat[1] the type
@@ -299,7 +306,7 @@ class Semant(object):
 
             # Test if the declared type is the same type as
             # the given value
-            value_type = check_expression_type(
+            value_type = get_expression_type(
                 expression.init, _class, self.scope
             )
             if expression.type != value_type:

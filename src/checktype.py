@@ -16,7 +16,7 @@ def returned_type(feature, _class):
     return _type
 
 
-def check_expression_type(expression, _class, scope):
+def get_expression_type(expression, _class, scope):
     """
         Returns the type of the expression.
 
