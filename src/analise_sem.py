@@ -336,7 +336,7 @@ class Semant(object):
                 expression, _class
             )
 
-            if first_type != second_type:
+            if first_type != 'Int' or second_type != 'Int':
                 raise TypeCheckError(first_type, second_type, _class)
 
         elif any(isinstance(expression, X) for X in [Plus, Sub, Mult, Div]):
@@ -344,7 +344,7 @@ class Semant(object):
                 expression, _class
             )
 
-            if first_type != second_type:
+            if first_type != 'Int' or second_type != 'Int':
                 raise ArithmeticError(first_type, second_type, _class)
 
         elif isinstance(expression, Assign):
