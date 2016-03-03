@@ -6,7 +6,8 @@ from myexceptions import (
     UndefinedMethodError, ReturnedTypeError,
     NumberOfArgumentError, RedefinedMethodError, RedefinedAttributeError,
     UndefinedParentError, ClassAlreadyDefinedError, InheritanceError,
-    ArgumentTypeError, DeclaredTypeError, AttributeTypeError
+    ArgumentTypeError, DeclaredTypeError, AttributeTypeError,
+    TypeCheckError, WhileStatementError, ArithmeticError, AssignError
 )
 from scope import Scope
 from checktype import (
@@ -315,6 +316,56 @@ class Semant(object):
             self.__check_children(expression.body, _class)
 
             self.scope.destroy()
+
+        elif isinstance(expression, While):
+            self.__check_children(expression.predicate, _class)
+            self.__check_children(expression.body, _class)
+
+            # If the methods above did not raise an error, means that
+            # the body type is Int or an Object.
+            # If is an Object and is not a Bool, must raise an error.
+            if isinstance(expression.predicate, Object):
+                obj_type = get_expression_type(
+                    expression.predicate, _class, self.scope
+                )
+                if obj_type != 'Bool':
+                    raise WhileStatementError(obj_type, _class)
+
+        elif isinstance(expression, Lt) or isinstance(expression, Le):
+            first_type, second_type = self.__get_params_types(
+                expression, _class
+            )
+
+            if first_type != second_type:
+                raise TypeCheckError(first_type, second_type, _class)
+
+        elif any(isinstance(expression, X) for X in [Plus, Sub, Mult, Div]):
+            first_type, second_type = self.__get_params_types(
+                expression, _class
+            )
+
+            if first_type != second_type:
+                raise ArithmeticError(first_type, second_type, _class)
+
+        elif isinstance(expression, Assign):
+            self.__check_children(expression.body, _class)
+            # If the method above did not raise an error, means that
+            # the body type is Int. Just need to test name now type.
+            name_type = get_expression_type(
+                expression.name, _class, self.scope
+            )
+
+            if name_type != 'Int':
+                raise AssignError(name_type, 'Int', _class)
+
+    def __get_params_types(self, expression, _class):
+        first_type = get_expression_type(
+            expression.first, _class, self.scope
+        )
+        second_type = get_expression_type(
+            expression.second, _class, self.scope
+        )
+        return first_type, second_type
 
 
 def semant(ast):

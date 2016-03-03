@@ -89,3 +89,39 @@ class AttributeTypeError(SemantError):
         super(AttributeTypeError, self).__init__(
             msg % (expression.name, expression.type, value_type)
         )
+
+
+class TypeCheckError(SemantError):
+
+    def __init__(self, first_type, second_type, _class):
+        msg = 'Must be a Integer to check with < , <= or == ! Was given %s and %s in class %s'
+        super(TypeCheckError, self).__init__(
+            msg % (first_type, second_type, _class.name)
+        )
+
+
+class ArithmeticError(SemantError):
+
+    def __init__(self, first_type, second_type, _class):
+        msg = 'Arithmetic operations require integers! Was given %s and %s in class %s'
+        super(ArithmeticError, self).__init__(
+            msg % (first_type, second_type, _class.name)
+        )
+
+
+class AssignError(SemantError):
+
+    def __init__(self, first_type, second_type, _class):
+        msg = 'Assign operations require same types! Was given %s and %s in class %s'
+        super(AssignError, self).__init__(
+            msg % (first_type, second_type, _class.name)
+        )
+
+
+class WhileStatementError(SemantError):
+
+    def __init__(self, value_type, _class):
+        msg = 'While statement must have a boolean type, was given %s in class %s'
+        super(WhileStatementError, self).__init__(
+            msg % (value_type, _class.name)
+        )
