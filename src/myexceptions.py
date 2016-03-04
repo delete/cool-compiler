@@ -118,10 +118,10 @@ class AssignError(SemantError):
         )
 
 
-class WhileStatementError(SemantError):
+class ConditionStatementError(SemantError):
 
-    def __init__(self, value_type, _class):
-        msg = 'While statement must have a boolean type, was given %s in class %s'
-        super(WhileStatementError, self).__init__(
-            msg % (value_type, _class.name)
+    def __init__(self, statement, value_type, _class):
+        msg = '%s statement must have a boolean type, was given %s in class %s'
+        super(ConditionStatementError, self).__init__(
+            msg % (statement, value_type, _class.name)
         )

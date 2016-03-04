@@ -7,7 +7,7 @@ from myexceptions import (
     NumberOfArgumentError, RedefinedMethodError, RedefinedAttributeError,
     UndefinedParentError, ClassAlreadyDefinedError, InheritanceError,
     ArgumentTypeError, DeclaredTypeError, AttributeTypeError,
-    TypeCheckError, WhileStatementError, ArithmeticError, AssignError
+    TypeCheckError, ConditionStatementError, ArithmeticError, AssignError
 )
 from scope import Scope
 from checktype import (
@@ -320,16 +320,10 @@ class Semant(object):
         elif isinstance(expression, While):
             self.__check_children(expression.predicate, _class)
             self.__check_children(expression.body, _class)
-
             # If the methods above did not raise an error, means that
             # the body type is Int or an Object.
             # If is an Object and is not a Bool, must raise an error.
-            if isinstance(expression.predicate, Object):
-                obj_type = get_expression_type(
-                    expression.predicate, _class, self.scope
-                )
-                if obj_type != 'Bool':
-                    raise WhileStatementError(obj_type, _class)
+            self.__raise_if_not_bool(expression, _class, 'While')
 
         elif isinstance(expression, Lt) or isinstance(expression, Le):
             first_type, second_type = self.__get_params_types(
@@ -357,6 +351,24 @@ class Semant(object):
 
             if name_type != 'Int':
                 raise AssignError(name_type, 'Int', _class)
+
+        elif isinstance(expression, If):
+            self.__check_children(expression.predicate, _class)
+            self.__check_children(expression.then_body, _class)
+            self.__check_children(expression.else_body, _class)
+            # If the methods above did not raise an error, means that
+            # the body type is Int or an Object.
+            # If is an Object and is not a Bool, must raise an error.
+            self.__raise_if_not_bool(expression, _class, 'If')
+            print(expression)
+
+    def __raise_if_not_bool(self, expression, _class, statement):
+        if isinstance(expression.predicate, Object):
+                obj_type = get_expression_type(
+                    expression.predicate, _class, self.scope
+                )
+                if obj_type != 'Bool':
+                    raise ConditionStatementError(statement, obj_type, _class)
 
     def __get_params_types(self, expression, _class):
         first_type = get_expression_type(
