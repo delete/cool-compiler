@@ -7,7 +7,8 @@ from myexceptions import (
     NumberOfArgumentError, RedefinedMethodError, RedefinedAttributeError,
     UndefinedParentError, ClassAlreadyDefinedError, InheritanceError,
     ArgumentTypeError, DeclaredTypeError, AttributeTypeError,
-    TypeCheckError, ConditionStatementError, ArithmeticError, AssignError
+    TypeCheckError, ConditionStatementError, ArithmeticError, AssignError,
+    EqualTypeCheckError, EqualCheckError
 )
 from scope import Scope
 from checktype import (
@@ -332,6 +333,17 @@ class Semant(object):
 
             if first_type != 'Int' or second_type != 'Int':
                 raise TypeCheckError(first_type, second_type, _class)
+
+        elif isinstance(expression, Eq):
+            first_type, second_type = self.__get_params_types(
+                expression, _class
+            )
+            types = ['String', 'Int', 'Bool']
+            if first_type not in types or second_type not in types:
+                raise EqualTypeCheckError(first_type, second_type, _class)
+
+            if first_type != second_type:
+                raise EqualCheckError(first_type, second_type, _class)
 
         elif any(isinstance(expression, X) for X in [Plus, Sub, Mult, Div]):
             first_type, second_type = self.__get_params_types(

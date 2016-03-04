@@ -94,8 +94,26 @@ class AttributeTypeError(SemantError):
 class TypeCheckError(SemantError):
 
     def __init__(self, first_type, second_type, _class):
-        msg = 'Must be a Integer to check with < , <= or == ! Was given %s and %s in class %s'
+        msg = 'Must be a Integer to check with < , <= or = ! Was given %s and %s in class %s'
         super(TypeCheckError, self).__init__(
+            msg % (first_type, second_type, _class.name)
+        )
+
+
+class EqualTypeCheckError(SemantError):
+
+    def __init__(self, first_type, second_type, _class):
+        msg = 'To compare two values, they must be String, Int or Bool. Was given %s and %s in class %s'
+        super(EqualTypeCheckError, self).__init__(
+            msg % (first_type, second_type, _class.name)
+        )
+
+
+class EqualCheckError(SemantError):
+
+    def __init__(self, first_type, second_type, _class):
+        msg = 'To compare two values, they must be the same type. Was given %s and %s in class %s'
+        super(EqualCheckError, self).__init__(
             msg % (first_type, second_type, _class.name)
         )
 
