@@ -335,6 +335,11 @@ class Semant(object):
                 raise TypeCheckError(first_type, second_type, _class)
 
         elif isinstance(expression, Eq):
+            """
+                The comparison = is a special case.
+                If either <expr1> or <expr2> has static type Int, Bool,
+                or String, then the other must have the same static type.
+            """
             first_type, second_type = self.__get_params_types(
                 expression, _class
             )
@@ -346,6 +351,11 @@ class Semant(object):
                 raise EqualCheckError(first_type, second_type, _class)
 
         elif any(isinstance(expression, X) for X in [Plus, Sub, Mult, Div]):
+            """
+                The static types of the two sub-expressions must be Int.
+
+                Cool has only integer division.
+            """
             first_type, second_type = self.__get_params_types(
                 expression, _class
             )
@@ -356,7 +366,7 @@ class Semant(object):
         elif isinstance(expression, Assign):
             self.__check_children(expression.body, _class)
             # If the method above did not raise an error, means that
-            # the body type is Int. Just need to test name now type.
+            # the body type is Int. Just need to test name type now.
             name_type = get_expression_type(
                 expression.name, _class, self.scope
             )
@@ -372,7 +382,6 @@ class Semant(object):
             # the body type is Int or an Object.
             # If is an Object and is not a Bool, must raise an error.
             self.__raise_if_not_bool(expression, _class, 'If')
-            print(expression)
 
     def __raise_if_not_bool(self, expression, _class, statement):
         if isinstance(expression.predicate, Object):
