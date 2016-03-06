@@ -244,7 +244,12 @@ class Semant(object):
                 self.scope.add(feature.name, _type)
 
             elif isMethod(feature):
-                self.scope.add(feature.name, (feature.formal_list, _type))
+                self.scope.add(feature.name, _type)
+
+                # Add arguments to scope. name:type
+                for formal in feature.formal_list:
+                    self.scope.add(formal[0], formal[1])
+
                 self.__check_children(feature.body, _class)
 
     def __check_children(self, expression, _class):
