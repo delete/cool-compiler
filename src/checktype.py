@@ -43,6 +43,9 @@ def get_expression_type(expression, _class, scope):
     elif isinstance(expression, Bool):
         return "Bool"
 
+    elif isinstance(expression, New):
+        return returned_type(expression, _class)
+
 
 def isMethod(feature):
     return isinstance(feature, Method)
