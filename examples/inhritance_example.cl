@@ -1,8 +1,9 @@
 class A inherits IO {
 
-    hello() : Int { 
-        {
-            out_int(1);
+    hello(x: Int) : Object { 
+        {            
+            out_string("Hello, world.\n");
+            out_int(x);
         }
     };
 }; 
@@ -15,7 +16,7 @@ class Main inherits IO {
         {
             out_string("Hello, world.\n");
             out_int(i);
-            a.hello();
+            a.hello(1);
         }
     };
 }; 
