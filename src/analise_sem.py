@@ -50,7 +50,9 @@ class Semant(object):
             Method('in_int', [], 'Int', None),
         ])
         # Interge inherits from Object
-        intc = Class("Int", "Object", [('variable', 'Int', Int(content=0))])
+        intc = Class("Int", "Object", [
+            Attr('variable', 'Int', Int(content=0))
+        ])
         # String inherits from Object
         stringc = Class("String", "Object", [
             Method('length', [], 'Int', None),
@@ -60,8 +62,9 @@ class Semant(object):
             ),
         ])
         # Boolean inherits from Object
-        boolc = Class("Bool", "Object", [('variable', 'Bool', Bool(content=False))])
-        
+        boolc = Class("Bool", "Object", [
+            Attr('variable', 'Bool', Bool(content=False))
+        ])
 
         self.ast += [objc, ioc, intc, stringc, boolc]
 
