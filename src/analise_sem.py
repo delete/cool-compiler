@@ -49,6 +49,8 @@ class Semant(object):
             Method('in_string', [], 'String', None),
             Method('in_int', [], 'Int', None),
         ])
+        # Interge inherits from Object
+        intc = Class("Int", "Object", [('variable', 'Int', Int(content=0))])
         # String inherits from Object
         stringc = Class("String", "Object", [
             Method('length', [], 'Int', None),
@@ -57,8 +59,11 @@ class Semant(object):
                 'substr', [('arg1', 'Int'), ('arg2', 'Int')], 'String', None
             ),
         ])
+        # Boolean inherits from Object
+        boolc = Class("Bool", "Object", [('variable', 'Bool', Bool(content=False))])
+        
 
-        self.ast += [objc, ioc, stringc]
+        self.ast += [objc, ioc, intc, stringc, boolc]
 
     def __create_symbol_tables(self):
         """
