@@ -235,13 +235,14 @@ class Semant(object):
             When a scope is created?
             With a new block, let, case,
 
-            OBS: Every attribute is private and every method is public.
+            OBS: Every attribute is protected and every method is public.
         """
 
         for feature in _class.feature_list:
             _type = returned_type(feature, _class)
 
             if isAttribute(feature):
+                print(feature)
                 value_type = get_expression_type(
                     feature.body, _class, self.scope
                 )
@@ -276,7 +277,14 @@ class Semant(object):
             if expression.body == 'self':
                 _class_name = _class.name
             else:
-                _class_name = expression.body.return_type
+                try:
+                    _class_name = expression.body.return_type
+                except AttributeError:
+                    # If the expression is an Object and there is no
+                    # return_type variable, so, need get the type.
+                    _class_name = get_expression_type(
+                        expression.body, _class, self.scope
+                    )
 
             # Get the whole class' structure
             _class_content = self.classes[_class_name]
@@ -304,11 +312,23 @@ class Semant(object):
                         if feat[1] != expression_type:
                             raise ArgumentTypeError(feature, _class_name)
 
-                    # Test if the returns types are not equals
-                    called_method_type = _class_name
+                    # For default, the method returns the host class. SELF_TYPE
+                    last_type = _class_name
+
                     feature_type = returned_type(feature, _class)
 
-                    if feature_type != called_method_type:
+                    # If exists a body, means that exists one or more
+                    # expressions inside the method.
+                    if feature.body:
+                        # Must to look the last expression, because it is the
+                        # type that will be returned
+                        last_expression = feature.body.body[-1]
+                        last_type = get_expression_type(
+                            last_expression, _class, self.scope
+                        )
+
+                    # If the returns types are not equals, raise an error
+                    if feature_type != last_type:
                         raise ReturnedTypeError(feature.name, _class_name)
 
             # If didn't match the method name...
