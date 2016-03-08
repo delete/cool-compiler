@@ -1,5 +1,5 @@
 class A inherits IO {
-
+    a : Int <- 2;
     hello(x: Int) : Int { 
         {            
             out_int(x);
@@ -12,6 +12,7 @@ class B inherits A {
     do() : String {
         {
             hello(2);
+            out_int(a);
             "do nothing";
         }
     };
