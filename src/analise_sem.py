@@ -242,10 +242,15 @@ class Semant(object):
             _type = returned_type(feature, _class)
 
             if isAttribute(feature):
-                print(feature)
                 value_type = get_expression_type(
                     feature.body, _class, self.scope
                 )
+
+                if not value_type:
+                    # If value_type is None, means that feature.body is
+                    # a complex expression, need to be checked.
+                    self.__check_children(feature.body, _class)
+
                 # Test if the attribute value type is the same as declared.
                 if feature.type != value_type:
                     raise AttributeTypeError(feature, value_type)
@@ -320,16 +325,22 @@ class Semant(object):
                     # If exists a body, means that exists one or more
                     # expressions inside the method.
                     if feature.body:
-                        # Must to look the last expression, because it is the
-                        # type that will be returned
-                        last_expression = feature.body.body[-1]
+                        try:
+                            # If have a Block, must look the last expression,
+                            # because it is the type that will be returned.
+                            last_expression = feature.body.body[-1]
+                        except AttributeError:
+                            last_expression = feature.body
+
                         last_type = get_expression_type(
                             last_expression, _class, self.scope
                         )
 
                     # If the returns types are not equals, raise an error
                     if feature_type != last_type:
-                        raise ReturnedTypeError(feature.name, _class_name)
+                        raise ReturnedTypeError(
+                            feature.name, _class_name, feature_type, last_type
+                        )
 
             # If didn't match the method name...
             if not called_method:
