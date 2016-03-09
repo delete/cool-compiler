@@ -11,9 +11,11 @@ class UndefinedMethodError(SemantError):
 
 class ReturnedTypeError(SemantError):
 
-    def __init__(self, method, _class):
-        msg = 'The method %s in class %s returns wrong type'
-        super(ReturnedTypeError, self).__init__(msg % (method, _class))
+    def __init__(self, method, _class, expected, returned):
+        msg = 'The method %s in class %s returns wrong type. Expected %s, returned %s.'
+        super(ReturnedTypeError, self).__init__(
+            msg % (method, _class, expected, returned)
+        )
 
 
 class ArgumentTypeError(SemantError):
