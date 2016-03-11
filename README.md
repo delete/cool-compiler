@@ -13,7 +13,7 @@ Install the requirements packages:
 
 Web app:
 
-> Only lexical and syntatic analyzers is working in web app for now.
+> Only lexical and syntatic analyzers are working in web app for now.
 
 `python2 app.py`
 
