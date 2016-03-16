@@ -2,7 +2,7 @@ import ply.yacc as yacc
 
 from tokrules import tokens
 from ast import *
-from analise_lex import MyLex
+from ..lexical import MyLex
 
 
 def syntactic(string):

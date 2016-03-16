@@ -1,4 +1,4 @@
-from ast import *
+from ..syntactic.ast import *
 from myexceptions import SemantError
 
 

@@ -1,3 +1,3 @@
-from .analise_sint import syntactic
-from .analise_sem import semant
-from .analise_lex import MyLex as lex
+from syntactic import syntactic
+from semantic import semant
+from lexical import MyLex as lex
