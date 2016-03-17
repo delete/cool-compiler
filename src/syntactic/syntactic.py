@@ -1,8 +1,9 @@
 import ply.yacc as yacc
 
-from tokrules import tokens
-from ast import *
 from ..lexical import MyLex
+from ..lexical.tokrules import *
+
+from ast import *
 
 
 def syntactic(string):

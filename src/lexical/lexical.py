@@ -3,7 +3,7 @@ import sys
 
 import ply.lex as lex
 
-from ..syntactic import tokrules
+import tokrules
 
 
 class MyLex(object):

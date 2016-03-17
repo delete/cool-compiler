@@ -2,6 +2,7 @@ from collections import defaultdict
 from copy import deepcopy
 
 from ..syntactic.ast import *
+
 from myexceptions import (
     UndefinedMethodError, ReturnedTypeError,
     NumberOfArgumentError, RedefinedMethodError, RedefinedAttributeError,
