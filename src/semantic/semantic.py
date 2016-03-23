@@ -446,13 +446,3 @@ class Semant(object):
             expression.second, _class, self.scope
         )
         return first_type, second_type
-
-
-def semant(ast):
-    print('\n\n====== DEBUGGING ======\n\n')
-    s = Semant(ast)
-    s.build()
-    print('\n\n====== CLASSES ======\n\n')
-    print(s.classes)
-    print('\n\n====== PARENTS ======\n\n')
-    print(s.parents)

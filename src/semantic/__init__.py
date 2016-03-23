@@ -1,1 +1,1 @@
-from .semantic import semant
+from .semantic import Semant
