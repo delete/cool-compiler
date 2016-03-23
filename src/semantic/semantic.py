@@ -101,7 +101,7 @@ class Semant(object):
             Check if every class has your right parent and children.
 
             First, set every class(including parents) as False.
-            Then, visit each class and their childs.
+            Then, visit each class and their children.
         """
         visited = {}
         for parent_name in self.parents.keys():
