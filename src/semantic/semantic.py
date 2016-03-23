@@ -367,8 +367,9 @@ class Semant(object):
             self.__check_children(expression.predicate, _class)
             self.__check_children(expression.body, _class)
             # If the methods above did not raise an error, means that
-            # the body type is Int or an Object.
-            # If is an Object and is not a Bool, must raise an error.
+            # the body's type is Int or an Object.
+            # If is an Object and the root type is not a Bool,
+            # must raise an error.
             self.__raise_if_not_bool(expression, _class, 'While')
 
         elif isinstance(expression, Lt) or isinstance(expression, Le):
