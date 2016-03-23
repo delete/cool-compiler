@@ -426,7 +426,8 @@ class Semant(object):
             self.__check_children(expression.else_body, _class)
             # If the methods above did not raise an error, means that
             # the body type is Int or an Object.
-            # If is an Object and is not a Bool, must raise an error.
+            # If is an Object and the root type is not a Bool,
+            # must raise an error.
             self.__raise_if_not_bool(expression, _class, 'If')
 
     def __raise_if_not_bool(self, expression, _class, statement):
