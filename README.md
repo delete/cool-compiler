@@ -3,23 +3,31 @@
 
 ![](http://i.imgur.com/ivygr2X.png)
 
-## Instalation
+## Installation
+
+Clone the project:
+
+```
+$ git clone https://github.com/delete/cool-compiler.git
+$ cd cool-compiler/
+```
+
 Install the requirements packages:
 
-`pip install -r requirements.txt`
+`$ pip install -r requirements.txt`
 
 
 ## Usage example
 
 Web app:
 
-> Only lexical and syntatic analyzers are working in web app for now.
+> Only lexical and syntatic analyzers are working on web app for now, if you want use semantic, please, run from terminal.
 
-`python2 app.py`
+`$ python2 app.py`
 
 Access:
 `http://127.0.0.1:5000/`
 
 Run from the terminal:
 
-`python2 compiler.py examples/hello-world.cl`
+`$ python2 compiler.py examples/hello-world.cl`
