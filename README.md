@@ -14,6 +14,8 @@ $ cd cool-compiler/
 
 Install the requirements packages:
 
+> See [here](https://pip.pypa.io/en/stable/installing/) how to install pip.
+
 `$ pip install -r requirements.txt`
 
 
