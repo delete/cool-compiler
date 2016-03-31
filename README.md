@@ -33,3 +33,5 @@ Access:
 Run from the terminal:
 
 `$ python2 compiler.py examples/hello-world.cl`
+
+> If no message appear, so everything is fine.
