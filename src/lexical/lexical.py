@@ -3,12 +3,13 @@ import sys
 
 import ply.lex as lex
 
+from commom import find_column
 import tokrules
 
 
 class MyLex(object):
 
-    def __init__(self, module=tokrules, string=None):
+    def __init__(self, module=tokrules):
         self.module = module
         self.lexer = None
         self.llex = []
@@ -21,25 +22,14 @@ class MyLex(object):
     def tokenize(self, newString):
         self.lexer.input(str(newString))
 
-        while 1:
+        while True:
             tok = self.lexer.token()
             if not tok:
                 break
-
-            lt = (tok.type, tok.value, tok.lineno, tok.lexpos)
+            lt = (tok.type, tok.value, tok.lineno, find_column(newString, tok))
             self.llex.append(lt)
 
         return tuple(self.llex), tuple(tokrules.lerror)
-
-    # Compute column.
-    # input is the input text string
-    # token is a token instance
-    def find_column(input, token):
-        last_cr = input.rfind('\n', 0, token.lexpos)
-        if last_cr < 0:
-            last_cr = 0
-        column = (token.lexpos - last_cr) + 1
-        return column
 
 
 if __name__ == '__main__':
