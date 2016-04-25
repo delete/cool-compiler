@@ -1,7 +1,7 @@
 class Scope():
     """
         List of dictionaries to save name->type.
-        This class represents an stack of environments.
+        This class represents a stack of environments.
         Each dictionary represents an environment.
     """
 
