@@ -150,11 +150,11 @@ class Semant(object):
             methods_of_child = self.__get_methods(cl)
 
             method_signatures_of_parent = self.__get_signatures(
-                                            methods_of_parent
-                                        )
+                methods_of_parent
+            )
             method_signatures_of_child = self.__get_signatures(
-                                            methods_of_child
-                                        )
+                methods_of_child
+            )
 
             self.__check_same_signature(
                 methods_of_child,
