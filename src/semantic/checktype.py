@@ -3,6 +3,13 @@ from myexceptions import SemantError
 
 
 def returned_type(feature, _class):
+    """
+        Returns the type of the feature.
+
+        There is a difference between attribute and method.
+        Attributes has "type" attribute and
+        method has "return_type" attribute.
+    """
     try:
         # For Attribute
         _type = feature.type
